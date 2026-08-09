@@ -93,7 +93,7 @@ const ICONS = {
 };
 
 
-export const notify = (message, title, type = "info") => {
+export const notify = (message, type = "info") => {
 
     // Find or create notification container
     let container = document.getElementById("notification-container");
@@ -118,7 +118,7 @@ export const notify = (message, title, type = "info") => {
     content.className = "notification-content";
 
     const heading = document.createElement("h4");
-    heading.textContent = title;
+    heading.textContent = type.charAt(0).toUpperCase() + type.slice(1);
 
     const text = document.createElement("p");
     text.textContent = message;

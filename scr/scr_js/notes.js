@@ -153,9 +153,9 @@ async function get_pinned_note() {
         return response.data
 
     } catch (error) {
-        console.log(error)
-        if (error.status == 401 && error.response.data.massage == "token not found") {
-            console.log('get note error')
+
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
         }
     }
 
@@ -176,9 +176,8 @@ async function get_all_notes(get_note_query) {
         return response.data
 
     } catch (error) {
-        console.log(error)
-        if (error.status == 401 && error.response.data.massage == "token not found") {
-            console.log('get note error')
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
         }
     }
 }
@@ -199,9 +198,8 @@ async function scrolling_get_notes(last_note_id) {
         return response.data
 
     } catch (error) {
-        console.log(error)
-        if (error.status == 401 && error.response.data.massage == "token not found") {
-            console.log('get note error')
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
         }
     }
 
@@ -225,13 +223,11 @@ async function get_one_note(note_id) {
         return response.data
 
     } catch (error) {
-        console.log(error)
-        if (error.status == 401 && error.response.data.massage == "token not found") {
-            console.log('get auth note error')
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
         }
-
-        if (error.response.data.massage == "cant get one note data") {
-            console.log('getting error in fetching one note in server')
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
         }
     }
 
@@ -267,8 +263,14 @@ async function save_note() {
             note_main_contant: note_main_contant
         })
 
+        if (response.data.success) {
+            notify("Note saved!", "success")
+        }
+
     } catch (error) {
-        console.log(error)
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
+        }
     }
 
 }
@@ -282,13 +284,15 @@ async function set_note_attri(note_id, attri, status) {
 
     try {
 
-        const result = await data_api.post('/notes/set_attri',
+        const response = await data_api.post('/notes/set_attri',
             {
                 note_id: note_id,
                 attri: attri,
                 status: status
             }
         )
+
+        return response
 
     } catch (error) {
         console.log('error')
@@ -998,8 +1002,19 @@ async function update_note(note_id) {
             note_main_contant: note_main_contant.value
         })
 
+        if (response.data.success) {
+            notify("Note saved!", "success")
+        }
+
     } catch (error) {
-        console.log(error)
+
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
+        }
+        if (error.status == 404) {
+            notify(error.response.data.message, "error")
+        }
+
     }
 
 }
@@ -1051,8 +1066,17 @@ async function logout() {
 
         const response = await data_api.delete('/logout/logout')
 
+        if (response.data.logout_status == 'true') {
+            window.location.href = '/'
+        }
+
     } catch (error) {
-        console.log(error)
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
+        }
+        if (error.status == 404) {
+            notify(error.response.data.message, "error")
+        }
     }
 
 }
@@ -1118,7 +1142,6 @@ close_editor.addEventListener("click", async () => {
 
         main_contant.style.display = "grid"
         note_editor.style.display = "none"
-        console.log('do you want to save the note')
         opened_note_in_editor_ID = null
 
     }
@@ -1163,8 +1186,6 @@ save_btn.addEventListener("click", async () => {
 
     if (opened_note_in_editor_ID == null) {
 
-        console.log('saving a new note')
-
         await save_note()
 
     }
@@ -1199,9 +1220,18 @@ delete_note_btn.addEventListener('click', async () => {
             note_menu.style.display = "none"
             opened_note_menu_ID = null
 
+            notify("Note permanently deleted", 'success')
+
         }
 
     } catch (error) {
+
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
+        }
+        if (error.status == 404) {
+            notify(error.response.data.message, "error")
+        }
 
     }
 
@@ -1217,12 +1247,25 @@ move_to_trash_btn.addEventListener('click', async () => {
 
     try {
 
-        await set_note_attri(opened_note_menu_ID, 'trash', status) // the convection is to set a attri 'attri_name' + 'attri_status' attri status can be true or false
+        const response = await set_note_attri(opened_note_menu_ID, 'trash', status) // the convection is to set a attri 'attri_name' + 'attri_status' attri status can be true or false
 
-        deletenote(opened_note_menu_ID)
+        if (response.data.massage == 'success') {
+            if (status) {
+                notify("Note moved to trash", 'success')
+            }
+            if (!status) {
+                notify("Note restored", 'success')
+            }
+            deletenote(opened_note_menu_ID)
+        }
 
     } catch (error) {
-        console.log(error)
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
+        }
+        if (error.status == 404) {
+            notify(error.response.data.message, "error")
+        }
     }
 
 })
@@ -1236,12 +1279,24 @@ move_to_archive_note_btn.addEventListener('click', async () => {
 
     try {
 
-        await set_note_attri(opened_note_menu_ID, 'archive', status)
+        const response = await set_note_attri(opened_note_menu_ID, 'archive', status)
 
-        deletenote(opened_note_menu_ID)
-
+        if (response.data.massage == 'success') {
+            if (status) {
+                notify("Note archived", 'success')
+            }
+            if (!status) {
+                notify("Note removed from archive", 'success')
+            }
+            deletenote(opened_note_menu_ID)
+        }
     } catch (error) {
-        console.log(error)
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
+        }
+        if (error.status == 404) {
+            notify(error.response.data.message, "error")
+        }
     }
 
 })
@@ -1255,10 +1310,24 @@ move_to_fav_note_btn.addEventListener('click', async () => {
 
     try {
 
-        await set_note_attri(opened_note_menu_ID, 'fav', status)
+        const response = await set_note_attri(opened_note_menu_ID, 'fav', status)
+
+        if (response.data.massage == 'success') {
+            if (status) {
+                notify("Added to favorites", 'success')
+            }
+            if (!status) {
+                notify("Removed from favorites", 'success')
+            }
+        }
 
     } catch (error) {
-        console.log(error)
+        if (error.status == 401) {
+            notify(error.response.data.message, "error")
+        }
+        if (error.status == 404) {
+            notify(error.response.data.message, "error")
+        }
     }
 
 })

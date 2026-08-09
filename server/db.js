@@ -324,6 +324,8 @@ async function delete_r_token_indb(R_token_hash) {
             [R_token_hash]
         )
 
+        console.log(result)
+
         if (result.rowCount === 1) {
             return true
         } else {
@@ -552,7 +554,7 @@ async function set_trash_indb(note_id, trash_status) {
 
     try {
 
-        const result = pool.query("UPDATE notes SET trashed = $1, delete_at = NOW() + INTERVAL '30 days' WHERE note_id = $2",
+        const result = await pool.query("UPDATE notes SET trashed = $1, delete_at = NOW() + INTERVAL '30 days' WHERE note_id = $2",
             [trash_status, note_id]
         )
 

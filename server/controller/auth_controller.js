@@ -294,6 +294,7 @@ const logout_user_cntl = async (req, res) => {
         })
 
     } else {
+        console.log('logut failed in controller')
         res.json({
             logout_status: "false"
         })
