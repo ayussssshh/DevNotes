@@ -492,6 +492,8 @@ async function logout_user_fnc(R_token) {
 
         const delete_r_token_status = await db_functions.delete_r_token_indb(R_token_hash)
 
+        console.log(delete_r_token_status, 'in auth.js')
+
         return delete_r_token_status
 
     } catch (error) {

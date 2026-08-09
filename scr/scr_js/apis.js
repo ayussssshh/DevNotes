@@ -1,4 +1,5 @@
 import axios from "axios";
+import { notify } from "./notification"
 
 
 
@@ -28,8 +29,6 @@ const page_api = axios.create({
 
 data_api.interceptors.response.use(
     async (response) => {
-
-
 
         return response;
     },
@@ -61,6 +60,10 @@ data_api.interceptors.response.use(
             console.log('token not found')
         
             return data_api(error.config)
+        }
+
+        if(error.response.status == 500) {
+            notify(error.response.data.message, "error")
         }
 
         return Promise.reject(error);

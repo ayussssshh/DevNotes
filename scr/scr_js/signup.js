@@ -2,6 +2,7 @@
 import isEmail from "validator/lib/isEmail";
 import {data_api, page_api} from "./apis.js";
 import "./../scr_css/signup.css"
+import { notify } from "./notification"
 
 
 // debounce fnc for showing feedback for email and pass
@@ -67,32 +68,26 @@ async function send_email() {
     
     validate_email();
     try {
+        
         const response = await data_api.post('/signup/check_email', {
             user_email: valid_user_email
         });
-        if (response.data.exists === "exist") {
-            document.getElementById('email_feedback').textContent = "email is already is being used"
-        } else {
-            document.getElementById('email_feedback').textContent = ""
-        }
+        
     } catch (error) {
-        console.log(error)
+        document.getElementById('email_feedback').textContent = "This email address is already associated with an account. Please use a different email address."
     }
 }
 
 async function send_phone_no() {
     console.log('sending phone no to backend for check')
     try {
+        
         let response = await data_api.post("/signup/check_phone_no", {
             phone_no: user_phone_no_input.value
         })
-        if (response.data.phone_no === "not_available") {
-            document.getElementById('phone_feedback').textContent = "Phone number. is used many times, use diffrent phone number"
-        } else {
-            document.getElementById('phone_feedback').textContent = ""
-        }
+        
     } catch (error) {
-        console.log(error)
+        document.getElementById('phone_feedback').textContent = "Phone number. is used many times, use diffrent phone number"
     }
 }
 
@@ -154,9 +149,9 @@ function check_user_fillup_or_not() {
         sendcred_bulean = false;
     }
     if (sendcred_bulean) {
-        console.log("sending data to backend for inserting in db")
+        
         sendcred();
-    }
+    } 
 }
 
 async function login_page() {

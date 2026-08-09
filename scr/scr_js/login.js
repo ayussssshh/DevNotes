@@ -2,6 +2,7 @@
 
 import {data_api, page_api} from "./apis.js"
 import "./../scr_css/login.css"
+import { notify } from "./notification"
 
 
 const email_or_username_input = document.getElementById("email_or_username_input");
@@ -30,12 +31,10 @@ async function login_user(){
             
            if (login_status === "true") {
              window.location.href = '/'
-           } else {
-            Password_feedback.textContent = "Incorrect password"
-           }
+           } 
 
         } catch (error) {
-            console.log(error);
+            notify(error.response.data.message, "error")
         }
 
  }
