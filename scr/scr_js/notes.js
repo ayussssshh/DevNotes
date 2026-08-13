@@ -481,9 +481,13 @@ async function handile_menu_position(rect) {
 
 async function create_pinned_notes() {
 
+    add_skeleton_screen()
+
     const all_notes_fragment = document.createDocumentFragment();
 
     const notes = await get_pinned_note()
+
+    remove_skeleton_screen()
 
     console.log(notes)
 
@@ -585,9 +589,13 @@ async function create_pinned_notes() {
 
 async function create_all_notes(get_note_query) {
 
+    add_skeleton_screen()
+
     const all_notes_fragment = document.createDocumentFragment();
 
     const notes = await get_all_notes(get_note_query)
+
+    remove_skeleton_screen()
 
     console.log(notes)
 
@@ -691,9 +699,13 @@ async function create_all_notes(get_note_query) {
 
 async function create_all_notes_scrolling(last_note_element_id) {
 
+    add_skeleton_screen()
+
     const all_notes_fragment = document.createDocumentFragment();
 
     const notes = await scrolling_get_notes(last_note_element_id)
+
+    remove_skeleton_screen()
 
     console.log(notes)
 
@@ -1371,9 +1383,10 @@ close_search_bar_btn.addEventListener('click', async () => {
 
     all_notes_btn.style.backgroundColor = "#afafaf"
 
-    await create_pinned_notes()
-
-    await create_all_notes()
+    await Promise.all([
+        create_pinned_notes(),
+        create_all_notes(current_site_view)
+    ])
 
     console.log('close_search_bar_btn is working')
 
@@ -1629,5 +1642,49 @@ remove_tag_container_close_btn.addEventListener('click', () => {
     remove_tag_span[2].textContent = ''
 })
 
+
+
+
+// adding the skeleton screen
+
+async function add_skeleton_screen() {
+
+    const skeleton_fragment = document.createDocumentFragment();
+
+    for (let i = 0; i < 40; i++) {
+
+        const note_div = document.createElement("div")
+        const tag_container = document.createElement("div")
+        const subject = document.createElement("h6")
+        const title = document.createElement("h4")
+        const content = document.createElement("p")
+
+
+        note_div.className = "skeleton_note";
+
+        tag_container.className = "skeleton_tag_container";
+        subject.className = "skeleton_item skeleton_subject";
+        title.className = "skeleton_item skeleton_title";
+        content.className = "skeleton_item skeleton_content";
+
+        note_div.append(title, subject, content, tag_container)
+
+        skeleton_fragment.appendChild(note_div)
+
+    }
+
+    all_notes.appendChild(skeleton_fragment)
+
+}
+
+
+// removing the skeleton screen
+
+
+function remove_skeleton_screen() {
+    document.querySelectorAll(".skeleton_note").forEach(element => {
+        element.remove();
+    });
+}
 
 

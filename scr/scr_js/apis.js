@@ -21,14 +21,13 @@ const page_api = axios.create({
 })
 
 
-
-
 // interceptor for checking the error code in responce from the server 
 
 // fix the bug that keeps call the /rotateRtoken in loop on faulty 401
 
 data_api.interceptors.response.use(
     async (response) => {
+        
 
         return response;
     },
