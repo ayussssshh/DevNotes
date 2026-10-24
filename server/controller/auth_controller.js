@@ -6,6 +6,20 @@ const auth_functions = require('../auth')
 
 
 
+// function for handling the response
+
+async function send_response(res, massage, status_code) {
+
+    return res.status(status_code).json({
+                success: true,
+                message: massage
+            });
+    
+}
+
+
+
+
 
 // 1) controller for checking the DB that there is email is already exist or not 
 
@@ -19,11 +33,11 @@ const check_email_availability_controller = async (req, res, next) => {
 
         if (email_availability) {
 
-            res.json({
-                exists: "available"
-            })
+            await send_response(res, "Email is available", 200)
 
         }
+        
+        return
 
     } catch (error) {
 
@@ -50,11 +64,11 @@ const check_phone_number_availability_controller = async (req, res, next) => {
 
         if (phone_no_availibility) {
 
-            res.json({
-                phone_no: 'available'
-            })
+            await send_response(res, "Phone Number is availble")
 
         }
+
+        return
 
     } catch (error) {
 
@@ -79,11 +93,11 @@ const check_username_availability_controller = async (req, res, next) => {
 
         if (username_availability) {
 
-            res.json({
-                exists: "available"
-            })
+            await send_response(res, "Username is available")
 
         }
+
+        return
 
     } catch (error) {
         next(error)
@@ -137,9 +151,7 @@ const user_signup_fnc = async (req, res, next) => {
                 maxAge: 1000 * 60 * 60
             })
 
-            res.json({
-                signup_status: "true"
-            })
+            await send_response(res, "Signup successful", 201);
 
         }
 
