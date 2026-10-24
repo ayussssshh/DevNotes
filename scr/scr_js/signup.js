@@ -5,7 +5,8 @@ import "./../scr_css/signup.css"
 import { notify } from "./notification"
 
 
-// debounce fnc for showing feedback for email and pass
+
+
 
 function debounce(fnc, event_listner_target, frequncy) {
 
@@ -30,8 +31,6 @@ const login_btn = document.getElementById('login-btn-(sign)');
 
 
 
-let valid_user_email = "";
-let valid_user_pass = "";
 
 //validating email
 
@@ -39,9 +38,10 @@ function validate_email() {
     let user_email = user_email_input.value;
     if (isEmail(user_email)) {
         document.getElementById('email_feedback').textContent = ""
-        return valid_user_email = user_email;
+        return true
     } else {
         document.getElementById('email_feedback').textContent = "Please provide a valid email"
+        return false
     }
 }
 
@@ -56,57 +56,108 @@ function validate_pass() {
         /[^A-Za-z0-9]/.test(user_pass);
     if (checkpass) {
         document.getElementById('pass_feedback').textContent = "";
-        return valid_user_pass = user_pass
+        return true
     } else {
         document.getElementById('pass_feedback').textContent = "Please create a Strong password";
+        return false
     }
 }
+
+
+// validate the phone number
+
+function validate_phoneNO(){
+
+    let phoneNO = user_phone_no_input.value
+
+    const phoneRegex = /^\+[1-9]\d{7,14}$/
+
+    if(!phoneRegex.test(phoneNO)){
+        document.getElementById("phone_feedback").textContent = "Phone number must be in international format (e.g. +919876543210)"
+        return false
+    }
+
+    document.getElementById("phone_feedback").textContent = ""
+
+    return true
+}
+
+
+
+// validate the username
+
+function validate_username(){
+
+    let username = user_username_input.value;
+
+    const usernameRegex = /^[a-zA-Z0-9._-]{3,30}$/
+
+    if(!usernameRegex.test(username)) {
+
+        document.getElementById("username_feedback").textContent = "Username must be 3 to 30 characters long and contain only letters, numbers, periods (.), underscores (_), and hyphens (-)."
+
+        return false
+
+    }
+
+    document.getElementById("username_feedback").textContent = ""
+
+    return true
+}
+
+
 
 // sending email to backend for checking the email already exist or not
 
 async function send_email() {
     
-    validate_email();
+    if(!validate_email) return
+    
     try {
         
         const response = await data_api.post('/signup/check_email', {
-            user_email: valid_user_email
+            user_email: user_email_input.value
         });
+
+        document.getElementById('email_feedback').textContent = ""
         
     } catch (error) {
-        document.getElementById('email_feedback').textContent = "This email address is already associated with an account. Please use a different email address."
+        document.getElementById('email_feedback').textContent = error.response.data.message
     }
 }
 
 async function send_phone_no() {
-    console.log('sending phone no to backend for check')
+   
+    if (!validate_phoneNO) return
+
     try {
         
         let response = await data_api.post("/signup/check_phone_no", {
             phone_no: user_phone_no_input.value
         })
-        
-    } catch (error) {
-        document.getElementById('phone_feedback').textContent = "Phone number. is used many times, use diffrent phone number"
+
+        document.getElementById('phone_feedback').textContent = ""
+
+    } catch (err) {        
+        document.getElementById('phone_feedback').textContent = err.response.data.message
     }
 }
 
 // send username to backend for checking
 async function send_username() {
+
+    if(!validate_username) return
     
     try {
+
         let response = await data_api.post('/signup/check_username', {
             username: user_username_input.value
         })
 
-        console.log(user_username_input.value)
-        if (response.data.exists === "exist") {
-            document.getElementById('username_feedback').textContent = "username is already is being used, try a diffrent one"
-        } else {
-            document.getElementById('username_feedback').textContent = ""
-        }
+        document.getElementById('username_feedback').textContent = ""
+
     } catch (error) {
-        console.log(error)
+        document.getElementById('username_feedback').textContent = error.response.data.message
     }
 }
 
@@ -114,19 +165,29 @@ async function send_username() {
 
 async function sendcred() {
 
-    validate_email();
-    validate_pass();
+    if(!validate_email) return
+    if(!validate_pass) return
+    if(!validate_phoneNO) return
+    if(!validate_username) return
 
     try {
         const response = await data_api.post('/signup/signup', {
-            user_email: valid_user_email,
+            user_email: user_email_input.value,
             phone_no: user_phone_no_input.value,
             user_username: user_username_input.value,
-            user_pass: valid_user_pass
+            user_pass: user_pass_input.value
         })
+
+        notify(response.data.message, "success")
+
+        setInterval(()=>{
+            window.location.href = "/"
+        }, 2000)
     }
     catch (err) {
-        console.log(err);
+        
+        notify(err.response.data.message, "error")
+
     }
 }
 
@@ -154,20 +215,18 @@ function check_user_fillup_or_not() {
     } 
 }
 
-async function login_page() {
-    try {
-        window.location.href = "/login"
-        console.log("sending req to get login page")
-    } catch (err) {
-        console.log(err)
-    }
+function login_page() {
+    
+    window.location.href = "/login"
+    console.log("sending req to get login page")
+
 }
 
 signup_btn.addEventListener("click", check_user_fillup_or_not);
 login_btn.addEventListener("click", login_page);
 
-debounce(validate_email, user_email_input, 2000);
-debounce(validate_pass, user_pass_input, 2000);
+// debounce(validate_email, user_email_input, 2000);
+// debounce(validate_pass, user_pass_input, 2000);
 debounce(send_email, user_email_input, 3000)
 debounce(send_username, user_username_input, 500);
 
