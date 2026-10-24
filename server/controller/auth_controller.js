@@ -64,7 +64,7 @@ const check_phone_number_availability_controller = async (req, res, next) => {
 
         if (phone_no_availibility) {
 
-            await send_response(res, "Phone Number is availble")
+            await send_response(res, "Phone Number is availble", 201)
 
         }
 
@@ -93,7 +93,7 @@ const check_username_availability_controller = async (req, res, next) => {
 
         if (username_availability) {
 
-            await send_response(res, "Username is available")
+            await send_response(res, "Username is available", 201)
 
         }
 
