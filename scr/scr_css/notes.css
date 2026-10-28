@@ -906,3 +906,180 @@
  #remove_tag_container::-webkit-scrollbar-thumb:hover {
      background: #94A3B8;
  }
+
+
+
+/* ============================================================ */
+/* RESPONSIVE: tablet + phone                                   */
+/* Everything below sits inside media queries, so the desktop   */
+/* layout above is untouched.                                   */
+/* ============================================================ */
+
+
+/* ---------- Tablet and below (max 1024px) ---------- */
+
+@media (max-width: 1024px) {
+
+    /* The fixed 350px search box made the top bar wider than the screen */
+    #search-container {
+        flex: 1;
+        width: auto;
+        min-width: 0;
+        max-width: 350px;
+    }
+
+    /* On short screens (phones, landscape) these were squashed to ~0 height */
+    #title,
+    #subject {
+        flex-shrink: 0;
+    }
+
+}
+
+
+/* ---------- Phone (max 767px) ---------- */
+
+@media (max-width: 767px) {
+
+    /* Layout: top bar / notes / nav bar stacked in a single column */
+    body {
+        height: 100vh;
+        height: 100dvh;
+        /* real visible height on mobile browsers */
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto 1fr auto;
+        grid-template-areas:
+            "top_nav_bar"
+            "main_content"
+            "side_nav_bar";
+    }
+
+    #main_content_container {
+        grid-area: main_content;
+        min-height: 0;
+    }
+
+
+    /* Top bar */
+    #top_nav_bar {
+        gap: var(--space-sm);
+    }
+
+    #search-container {
+        margin-left: var(--space-md);
+    }
+
+    #search-input {
+        font-size: 16px;
+        /* 16px+ stops iOS from zooming in when the field is focused */
+    }
+
+    #new_note_btn,
+    #new_note_btn:active {
+        width: auto;
+        height: 36px;
+        padding: 0 var(--space-md);
+        flex-shrink: 0;
+    }
+
+    #notification_icon_btn,
+    #user_profile_btn {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+    }
+
+    #user_profile_btn {
+        margin-right: var(--space-md);
+    }
+
+
+    /* Side bar becomes a bottom navigation bar */
+    #side_nav_bar {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-sm);
+        padding: var(--space-sm) var(--space-md);
+        border-width: 1px 0 0;
+    }
+
+    #logo_name {
+        display: none;
+    }
+
+    .side_nav_bar_content {
+        flex: 1;
+        height: 40px;
+    }
+
+    #logout_btn {
+        margin: 0;
+        height: 40px;
+        padding: 0 var(--space-md);
+    }
+
+
+    /* Notes list: one column */
+    #all_notes {
+        grid-template-columns: minmax(0, 1fr);
+        gap: var(--space-md);
+        padding: var(--space-md);
+    }
+
+    .notes {
+        overflow-wrap: anywhere;
+        /* long words / URLs in a title can't widen the card */
+    }
+
+
+    /* Editor */
+    #note_editor_header {
+        gap: var(--space-sm);
+        padding: 12px var(--space-md);
+    }
+
+    #seacrh_in_notes {
+        min-width: 0;
+        /* lets the input shrink inside the flex row */
+        font-size: 16px;
+    }
+
+    #savebtn,
+    #editor_opitions,
+    #close_editor {
+        padding: 10px 12px;
+    }
+
+    #note_inputs {
+        padding: var(--space-md);
+        gap: 12px;
+    }
+
+    #title {
+        font-size: 1.5rem;
+    }
+
+
+    /* Popups become bottom sheets.
+       notes.js sets left/top inline (button position - 150px), which pushes
+       them off-screen on a phone, so these need !important to win. */
+    #note_menu,
+    #add_tag_container,
+    #remove_tag_container {
+        position: fixed;
+        left: 0 !important;
+        right: 0 !important;
+        top: auto !important;
+        bottom: 0;
+        width: auto;
+        max-height: 70dvh;
+        margin: 0;
+        overflow-y: auto;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    #add_tag_input {
+        font-size: 16px;
+    }
+
+}
