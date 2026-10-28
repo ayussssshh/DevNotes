@@ -1,4 +1,4 @@
-const pool = require("./dbconfig");
+const pool = require("./configs/dbconfig");
 
 const {
     ValidationError,

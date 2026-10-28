@@ -195,3 +195,85 @@ body {
 
 
 
+
+
+
+/* ============================================================ */
+/* RESPONSIVE: tablet + phone                                   */
+/* Everything below sits inside media queries, so the desktop   */
+/* layout above is untouched.                                   */
+/* ============================================================ */
+
+
+/* ---------- Tablet and below (max 1024px) ---------- */
+
+@media (max-width: 1024px) {
+
+    /* 100vw + the border caused a small sideways scroll */
+    #TopNavBar {
+        width: auto;
+    }
+
+    /* The feature images contain text, so keep them big enough to read */
+    #featureImg img {
+        width: 85%;
+    }
+
+}
+
+
+/* ---------- Phone (max 767px) ---------- */
+
+@media (max-width: 767px) {
+
+    #logo {
+        height: auto;
+        width: 130px;
+    }
+
+    #authbtn {
+        gap: var(--space-sm);
+        margin: var(--space-sm);
+    }
+
+    #hero {
+        margin: var(--space-xl) var(--space-md);
+    }
+
+    #heroH1text h1 {
+        font-size: 2rem;
+    }
+
+    #herobtn {
+        gap: var(--space-md);
+    }
+
+    /* Features: stack instead of 3 across */
+    #featureImg {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+
+    #featureImg img {
+        width: 80%;
+        max-width: 320px;
+    }
+
+    #websiteSS {
+        margin: var(--space-xl) var(--space-md);
+    }
+
+    #ss img {
+        width: 100%;
+    }
+
+    #footer {
+        justify-content: center;
+        column-gap: var(--space-md);
+    }
+
+    .footerBtn {
+        margin: var(--space-md) var(--space-sm);
+    }
+
+}

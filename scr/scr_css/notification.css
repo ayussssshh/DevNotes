@@ -160,3 +160,21 @@
     color:#3b82f6;
 
 }
+
+
+/* ---------- Responsive: small phones ---------- */
+/* The toast is a fixed 340px wide, which is wider than a small phone screen */
+
+@media (max-width: 480px) {
+
+    #notification-container {
+        top: 12px;
+        left: 12px;
+        right: 12px;
+    }
+
+    .notification {
+        width: auto;
+    }
+
+}
